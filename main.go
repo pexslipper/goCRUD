@@ -42,5 +42,21 @@ func main() {
 		})
 	})
 
+	router.GET("/user/:name", func(c *gin.Context) {
+		var user Users
+		name := c.Param("name")
+		result := db.Where("name = ?", name).First(&user)
+		if result.RowsAffected == 0 {
+			c.JSON(200, gin.H{
+				"Message": "No user name " + name,
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"users": user,
+			})
+
+		}
+	})
+
 	router.Run("localhost:3000") // listen and serve on 0.0.0.0:8080
 }
