@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
@@ -34,6 +36,15 @@ func main() {
 	// db.Create(users) // pass a slice to insert multiple row
 
 	router := gin.Default()
+
+	router.POST("/adduser", func(c *gin.Context) {
+		name := c.PostForm("name")
+		score := c.PostForm("score")
+		intscore, _ := strconv.Atoi(score)
+		user := Users{Name: name, Score: uint(intscore)}
+		db.Create(&user)
+	})
+
 	router.GET("/users", func(c *gin.Context) {
 		var users []Users
 		db.Find(&users)
