@@ -94,5 +94,21 @@ func main() {
 
 	})
 
+	router.POST("/deleteuser", func(c *gin.Context) {
+		user := Users{}
+		name := c.PostForm("name")
+		result := db.Where("name = ?", name).Delete(&user)
+		if result.RowsAffected == 0 {
+			c.JSON(200, gin.H{
+				"Message": "No user name " + name,
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"Deleted": name,
+			})
+
+		}
+	})
+
 	router.Run("localhost:3000") // listen and serve on 0.0.0.0:8080
 }
