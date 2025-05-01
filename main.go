@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -67,6 +68,30 @@ func main() {
 			})
 
 		}
+	})
+
+	router.POST("/updatescore/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		score := c.PostForm("score")
+		intscore, _ := strconv.Atoi(score)
+
+		var user Users
+		result := db.Where("name = ?", name).First(&user)
+		user.Score = uint(intscore)
+		db.Save(&user)
+
+		fmt.Println(intscore, score)
+		if result.RowsAffected == 0 {
+			c.JSON(200, gin.H{
+				"Message": "No user name " + name,
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"Updated users": user,
+			})
+
+		}
+
 	})
 
 	router.Run("localhost:3000") // listen and serve on 0.0.0.0:8080
